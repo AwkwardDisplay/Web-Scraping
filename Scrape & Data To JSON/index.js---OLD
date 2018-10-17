@@ -1,0 +1,63 @@
+
+// REQUIRE EXPRESS, FS, CHEERIO AND REQUEST MODULES
+const express = require('express');
+const fs = require('fs');
+const cheerio = require('cheerio');
+const request = require('request');
+var app = express();
+
+app.get('/scrape', function(req, res){
+
+    // URL OF SCRAPE WEBSITE
+    url = 'http://www.imdb.com/title/tt1229340/';
+
+    request(url, function(error, response, html){
+
+        // CHECK FOR ERRORS BEFORE CONTINUING
+        if (!error){
+            
+            // SET UP CHEERIO
+            var $ = cheerio.load(html);
+
+            // DEFINE SCRAPE VARIABLES
+            var title, release, rating;
+            var json = { title : "", release : "", rating : "" };
+
+            // START TO TRAVERSE THE DOM [1]
+            $('.title_wrapper').filter(function() {
+                var data = $(this);
+                title = data.children().first().text();
+                release = data.children().last().children().last().text();
+                json.title = title;
+                json.release = release;
+            })
+
+            // START TO TRAVERSE THE DOM [2]
+            $('.ratingValue').filter(function() {
+                var data = $(this);
+                rating = data.text();
+                json.rating = rating;
+            })
+        }
+
+        // WRITE DATA TO JSON FILE [USING FS (FILESYSTEM) MODULE]
+        fs.writeFile('output.json', JSON.stringify(json, null, 4), function(err) {
+            console.log('> Scraped Data has been stored in "output.json".');
+            console.log('> ')
+        })
+
+    })
+})
+
+// CLEAR CONSOLE WINDOW
+process.stdout.write('\033c');
+
+// PORT THE NODE SERVER WILL BE ON
+app.listen('5858');
+console.log('> SERVER HAS STARTED ');
+console.log('> SERVER OPEN ON PORT: 5858');
+console.log('> WAITING ON ACCESS TO: ');
+console.log('\n\n> " localhost:5858/scrape "');
+
+exports = module.exports = app;
+

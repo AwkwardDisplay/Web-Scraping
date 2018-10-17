@@ -1,0 +1,17 @@
+{
+  "name": "web-scraping",
+  "version": "2.0.0",
+  "description": "Testing Web Scraping - Passing Data into JSON File",
+  "main": "index.js",
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.2",
+    "express": "^4.16.4",
+    "request": "^2.88.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Edward Gough",
+  "license": "ISC"
+}
